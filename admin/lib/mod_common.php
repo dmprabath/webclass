@@ -52,5 +52,10 @@ function prodCountBelowReorder(){
 	return $rec[0];
 	$dbobj->close();
 }
+function getCurrentDate(){
+	$cdate =date("Y-m-d",time());
+	return  $cdate;
+
+}
 
 ?>

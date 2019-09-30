@@ -126,6 +126,16 @@ if(!isset($_SESSION["user"])){
             <a class="dropdown-item menu" href="#" title="" id="lnkviewpro">View products</a>
             
         </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="pagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <i class="fas fa-shopping-cart"></i>     
+            <span> Invoice</span>
+          </a>
+          <div class="dropdown-menu" aria-labelledby="pagesDropdown">            
+            <a class="dropdown-item menu" href="#" title="" id="lnknewinv">New Invoice</a>
+            <a class="dropdown-item menu" href="#" title="" id="lnkviewinv">View Invoice</a>          
+        </li>
+
         <li class="nav-item">
           <a class="nav-link" href="#">
             <i class="fas fa-fw fa-table"></i>
@@ -199,8 +209,11 @@ if(!isset($_SESSION["user"])){
         case "lnknewgrn":
           $("#rpanel").load("view/newgrn.php");
           break;
-          case "lnkprodimg":
+        case "lnkprodimg":
           $("#rpanel").load("view/prodimg.php");
+          break;
+        case "lnknewinv":
+          $("#rpanel").load("view/newinv.php");
           break;
 
       }      
