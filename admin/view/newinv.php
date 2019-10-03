@@ -47,7 +47,7 @@ require("../lib/mod_common.php")
 
 <div class="form-group row">
       <label for="cmbcat" class="col col-sm-2 col-form-label">Units</label>
-      <div class="col-sm-1">
+      <div class="col-sm-2">
           <input type="number" name="txtqty" id="txtqty"  class="form-control" value="1" min="1" >
       </div>
  </div>
@@ -55,12 +55,14 @@ require("../lib/mod_common.php")
       <button type="button" class="ml-3 col-sm-1 btn btn-primary" id="btnadd" name="btnadd" >ADD </button>
       
 </div>
+
 <div id="dvdetails">
 	<table class="table ">
 	  <thread>
 	    <tr>
 	      <th></th>
 	      <th>Product ID</th>
+	      <th>Batcht ID</th>
 	      <th>Product Name</th>	      
 	      <th>Price(Rs)</th>
 	      <th>Qty</th>
@@ -72,19 +74,19 @@ require("../lib/mod_common.php")
 	    </tbody>
 	    <tfoot>
 	      <tr align="right">
-	        <th colspan="5" >Gross Total(Rs)</th>
+	        <th colspan="6" >Gross Total(Rs)</th>
 	        <td><input type="text" name="txtgtot" id="txtgtot" class="form-control-plaintext currency" readonly="readonly" size="2" value="0.00" ></td>
 	      </tr>
 	      <tr align="right">
-	        <th colspan="5" >Discount (%)</th>
-	        <td> <input type="text" size="1" class="currency form-control" id="txtdiscount" name="txtdiscount"> </td>
+	        <th colspan="6" >Discount (%)</th>
+	        <td> <input type="text" size="1" class="currency form-control" id="txtdiscount" value="0" name="txtdiscount"> </td>
 	      </tr>
 	      <tr align="right">
-	        <th colspan="5" >Net Total(Rs)</th>
+	        <th colspan="6" >Net Total(Rs)</th>
 	        <td><input type="text" name="txtntot" id="txtntot" class="form-control-plaintext currency" readonly="readonly" size="2" value="0.00 "></td>
 	      </tr>
 	      <tr>
-	        <td colspan="6">
+	        <td colspan="7">
 	          <button type="button" class=" col-sm-1 btn btn-success" id="btnsave" name="btnsave" >Save </button>
 	          <button type="button" class=" col-sm-1 btn btn-danger" id="btncancel" name="btncancel" >Cancel </button>
 	        </td>
@@ -140,7 +142,143 @@ require("../lib/mod_common.php")
 	      	}
 	      }
        });
- 	})
+
+ 		$("#btnadd").click(function(){
+ 			var pid = $("#txtproid").val();
+ 			var avail = parseInt($("#txteqty").val());
+ 			var rqty = parseInt($("#txtqty").val());
+
+ 			if(rqty>avail){
+ 				swal("Error","Availabilty less than required quantiy","error");
+ 				return;
+ 			}
+ 			var url = "lib/mod_inv.php?type=getBatchDetails";
+ 			$.ajax({
+
+		        method:"POST",
+		        url:url,
+		        data:{prodid:pid,rqty:rqty},
+		        dataType:"json",
+		        success:function(result){
+		           for(i=0; i<result.length; i++){
+		           	 var pid = result[i][0];
+		           	 var bid = result[i][1];
+		           	 var pname = result[i][2];
+		           	 var sprice = parseFloat(result[i][3]);
+		           	 var qty = parseFloat(result[i][4]);
+		           	 var total = sprice * qty;
+		           	 var gtot = parseFloat($("#txtgtot").val());
+		           	 var ntot = parseFloat($("#txtntot").val());
+
+		           	 var row ="<tr>";
+         				row +="<td><a href='javascript:void(0)'><i class='fa fa-times text-danger remove' aria-hidden='true'><i/></a></td>";
+
+         				row +="<td><input type='text' class='form-control-plaintext ' readonly='readonly' value='"+pid+"' name='txtipid[]' /></td>";
+
+         				row +="<td><input type='text' class='form-control-plaintext ' readonly='readonly' value='"+bid+"' name='txtibid[]' /></td>";
+
+         				row +="<td><input type='text' class='form-control-plaintext ' readonly='readonly' value='"+pname+"' name='txtipname[]' /></td>";
+
+         				row +="<td><input type='text' class='form-control-plaintext ' readonly='readonly' value='"+sprice+"' name='txtisprice[]' /></td>";
+
+         				row +="<td><input type='text' class='form-control-plaintext ' readonly='readonly' value='"+qty+"' name='txtiqty[]' /></td>";
+
+         				row +="<td><input type='text' class='form-control-plaintext text-right total ' readonly='readonly' value='"+total+"' name='txtitotal[]' /></td>";
+
+         				row += "</tr>";
+
+         				gtot = gtot + total;
+         				ntot = ntot + total;
+         				$("#txtgtot").val(gtot);
+         				$("#txtntot").val(ntot);
+
+         				$("#invdetails").append(row);
+         				resetctrl();
+
+
+		           }
+		          
+		      	},
+			        error:function(eobj,etxt,err){
+			        console.log(etxt);
+	       		}
+        	});
+ 		});
+
+	 	$("#txtdiscount").keypress(function(e){
+	      if(e.which==13){
+	        if($(this).val()==""){
+	          $("#txtntot").val($("#txtgtot").val());
+	        }else{
+	          var discount = parseFloat($(this).val());
+	          var gtot = parseFloat($("#txtgtot").val());
+	          var ntot = gtot - (gtot*discount/100);
+	          $("#txtntot").val(ntot);
+	        }
+	        
+	        $(this).prop("readonly","readonly");
+	      		}
+	    	});
+		    $("#txtdiscount").dblclick(function(e){
+		      $(this).prop("readonly","");
+	    	});
+
+
+	    	$("#invdetails").on("click",".remove",function(){ // after load page if click remove run function
+       // $(this).parents("tr").remove();
+		       var total =parseFloat($(this).parents("tr").find(".total").val());
+		       var gtot = parseFloat($("#txtgtot").val());
+		        var ntot = parseFloat($("#txtntot").val());
+
+		        gtot = gtot-total;
+		        $("#txtdiscount").prop("readonly","");
+		        $("#txtdiscount").val("");
+		        ntot = gtot;
+
+		        $("#txtgtot").val(gtot);
+		        $("#txtntot").val(ntot);
+
+		        $(this).parents("tr").remove();
+   			 });
+
+	    	$("#btnsave").click(function(){
+		      var fdata = $('form').serialize();
+		      var url = "lib/mod_inv.php?type=newInvoice";
+
+		      $.ajax({
+		        method:"POST",
+		        url:url,
+		        data:fdata,
+		        dataType:"text",
+		        success:function(result){
+		         // alert(result);
+		        res = result.split(",");
+		        if(res[0]=="0"){
+		          swal("Error",res[1],"error")
+		        }
+		        else if(res[0]=="1"){
+		          swal("Success",res[1],"success");
+		          $("#lnknewinv").click();
+		        }
+		      },
+		        error:function(eobj,etxt,err){
+		          console.log(etxt);
+      			}
+
+     		 	});
+    		});
+
+    
+ 	});
+
+ 		
+ 	function resetctrl(){
+	  $("#txtproid").val("");
+	  $("#txtproname").val("");
+	  $("#txteqty").val("");
+	  $("#txtqty").val("1");
+	  
+}
  </script>        
           
           

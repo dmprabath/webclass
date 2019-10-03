@@ -45,5 +45,48 @@ function getProductDetails(){
 	}
 	$dbobj->close();
 }
+function getBatchDetails(){
+	$prodid= $_POST["prodid"];
+	$rqty= $_POST["rqty"];
+	$dbobj =DB::connect();
+
+	$sql = "SELECT * FROM tbl_batch JOIN tbl_product ON tbl_batch.prod_id = tbl_product.prod_id WHERE tbl_batch.prod_id='$prodid' and tbl_batch.bat_status=1 ORDER BY tbl_batch.bat_id ASC;";
+
+	$result = $dbobj ->query($sql);
+	
+	if($dbobj->errno){
+		echo("0,SQL Error : ".$dbobj->erro);
+		exit;
+	}
+	$output = array(); // output array multiple columns
+	while($rec = $result->fetch_assoc()){  // output row by row
+		$line =array();
+
+		if($rec["bat_qty_rem"]>=$rqty){
+			$line[0] = $rec['prod_id'];
+			$line[1] = $rec['bat_id'];
+			$line[2] = $rec['prod_name'];
+			$line[3] = $rec['bat_sprice'];
+			$line[4] = $rqty;
+			$output[] = $line;
+			break;
+			
+		}else{
+			$line[0] = $rec['prod_id'];
+			$line[1] = $rec['bat_id'];
+			$line[2] = $rec['prod_name'];
+			$line[3] = $rec['bat_sprice'];
+			$line[4] = $rec['bat_qty_rem'];
+			$rqty = $rqty - $rec["bat_qty_rem"];
+			$output[] = $line;
+		}
+	}
+	echo (json_encode($output));
+	$dbobj->close();
+
+
+
+
+}
 
 ?>

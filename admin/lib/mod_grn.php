@@ -129,11 +129,11 @@ function newGRN(){
 			$bat_id = getNewBatchId();
 			$stat="1";
 
-			$sql_batch = "INSERT INTO tbl_batch(bat_id,grn_id,prod_id,bat_sprice,bat_cprice,bat_qty,bat_rdate,bat_edate,bat_status) VALUES(?,?,?,?,?,?,?,?,?);";
+			$sql_batch = "INSERT INTO tbl_batch(bat_id,grn_id,prod_id,bat_sprice,bat_cprice,bat_qty,bat_qty_rem,bat_rdate,bat_edate,bat_status) VALUES(?,?,?,?,?,?,?,?,?,?);";
 
 			$stmt_batch = $dbobj->prepare($sql_batch);
 	
-			$stmt_batch->bind_param("sisddissi",$bat_id,$grn_id,$pro_id[$i],$sel_price[$i],$cost_price[$i],$pro_qty[$i],$grn_rdate,$exp_date[$i],$stat);
+			$stmt_batch->bind_param("sisddiissi",$bat_id,$grn_id,$pro_id[$i],$sel_price[$i],$cost_price[$i],$pro_qty[$i],$pro_qty[$i],$grn_rdate,$exp_date[$i],$stat);
 			if(!$stmt_batch->execute())
 				echo("0,SQL Error : ".$stmt_batch->error);
 			else{
