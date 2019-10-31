@@ -15,7 +15,7 @@ require("../lib/mod_common.php")
   <li class="breadcrumb-item active">New Invoice</li>
 </ol>
 
-
+<form>
 <div class="form-group row">
       <label for="cmbcat" class="col col-sm-2 col-form-label">Invoice ID</label>
       <div class="col-sm-3">
@@ -95,7 +95,7 @@ require("../lib/mod_common.php")
 	</table> 
   
 </div>
-         
+    </form>     
 
 
  <script type="text/javascript">
@@ -251,14 +251,24 @@ require("../lib/mod_common.php")
 		        data:fdata,
 		        dataType:"text",
 		        success:function(result){
-		         // alert(result);
+
+		          /*alert(result);*/
 		        res = result.split(",");
 		        if(res[0]=="0"){
 		          swal("Error",res[1],"error")
 		        }
 		        else if(res[0]=="1"){
-		          swal("Success",res[1],"success");
-		          $("#lnknewinv").click();
+		          /*swal("Success",res[1],"success");
+		          $("#lnknewinv").click();*/
+		         
+		          var invid = $("#txtinvno").val();
+		          var amount = $("#txtntot").val();
+		          
+		          sessionStorage.setItem("invid",invid);
+		          sessionStorage.setItem("amt",amount);
+		          var url = "view/pgw.php";
+		          	window.location.href=url;
+		          
 		        }
 		      },
 		        error:function(eobj,etxt,err){

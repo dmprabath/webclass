@@ -8,6 +8,9 @@ if(!isset($_SESSION["user"])){
 }
 ?>
 
+
+
+
     <nav class="navbar navbar-expand navbar-dark bg-dark static-top">
 
       <a class="navbar-brand mr-1" href="home.php">DMP DESIGNERS</a>
@@ -29,11 +32,12 @@ if(!isset($_SESSION["user"])){
       </form>
 
       <!-- Navbar -->
+
       <ul class="navbar-nav ml-auto ml-md-0">
         <li class="nav-item dropdown no-arrow mx-1">
           <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <i class="fas fa-bell fa-fw"></i>
-            <span class="badge badge-danger"><?php getEmployeeCount(); ?></span>
+            <span class="badge badge-danger badge-counter"><?php getEmployeeCount(); ?></span>
           </a>
           <div class="dropdown-menu dropdown-menu-right" aria-labelledby="alertsDropdown">
             <?php getEmployeeList(); ?>
@@ -42,7 +46,7 @@ if(!isset($_SESSION["user"])){
         <li class="nav-item dropdown no-arrow mx-1">
           <a class="nav-link dropdown-toggle" href="#" id="messagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <i class="fas fa-envelope fa-fw"></i>
-            <span class="badge badge-danger">7</span>
+            <span class="badge badge-danger badge-counter">7</span>
           </a>
           <div class="dropdown-menu dropdown-menu-right" aria-labelledby="messagesDropdown">
             <a class="dropdown-item" href="#">Action</a>
@@ -136,6 +140,16 @@ if(!isset($_SESSION["user"])){
             <a class="dropdown-item menu" href="#" title="" id="lnkviewinv">View Invoice</a>          
         </li>
 
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="pagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <i class="fas fa-shopping-cart"></i>     
+            <span> Reports</span>
+          </a>
+          <div class="dropdown-menu" aria-labelledby="pagesDropdown">            
+            <a class="dropdown-item menu" href="#" title="" id="lnkrptemp">Employee</a>
+            <a class="dropdown-item menu" href="#" title="" id="lnkrptpro">Products</a>          
+        </li>
+
         <li class="nav-item">
           <a class="nav-link" href="#">
             <i class="fas fa-fw fa-table"></i>
@@ -214,6 +228,9 @@ if(!isset($_SESSION["user"])){
           break;
         case "lnknewinv":
           $("#rpanel").load("view/newinv.php");
+          break;
+        case "lnkrptemp":
+          $("#rpanel").load("view/rptemp.php");
           break;
 
       }      

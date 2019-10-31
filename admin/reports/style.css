@@ -1,0 +1,20 @@
+table{
+				border: 1px solid red;
+
+			}
+			table th {
+				color:green;
+				font-size:12px;
+				margin:2px;
+				border-bottom:1px solid red;
+			}
+			td{
+				font-size:8px;
+
+			}
+.hed-color{
+	color:red;
+}
+#hed1{
+	color:blue;
+}
